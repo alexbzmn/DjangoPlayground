@@ -1,5 +1,8 @@
 from django.http import HttpResponse, Http404
 from django.shortcuts import render, get_object_or_404
+from django.utils import timezone
+
+import json
 
 from .models import Question, Choice
 
@@ -23,7 +26,15 @@ def create_question_view(request, arg):
     return render(request, 'polls/createq.html')
 
 
-def create_question_create(request, question_text):
+def create_question_create(request, arg):
+    questionJSON = json.loads(request.body)
+
+    question = Question()
+    question.question_text = str(questionJSON.get("Text"))
+    question.pub_date = timezone.now()
+
+    question.save()
+
     return HttpResponse("Question is created")
 
 

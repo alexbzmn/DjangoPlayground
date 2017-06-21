@@ -5,33 +5,46 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     {% load static %}
 
-    <title>jQuery UI Button - Default functionality</title>
+    <title>Create entry</title>
+    <link rel="stylesheet" href="{% static 'css/custom.css' %}">
 
-    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-    <link rel="stylesheet" href="/resources/demos/style.css">
-
-    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <link rel="stylesheet" type="text/css" href="http://w2ui.com/src/w2ui-1.5.rc1.min.css"/>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script type="text/javascript" src="http://w2ui.com/src/w2ui-1.5.rc1.min.js"></script>
     <script src="{% static 'polls/test.js' %}"></script>
-
-    <script>
-        $(function () {
-            $(".widget input[type=submit], .widget a, .widget button").button();
-            $("button, input, a").click(function (event) {
-                event.preventDefault();
-            });
-        });
-    </script>
+    <script src="{% static 'polls/csrf.js' %}"></script>
 </head>
 <body>
-<div class="widget">
-    <h1>Widget Buttons</h1>
-    <button id="test_button">A button element</button>
 
-    <input type="submit" value="A submit button">
-
-    <a href="#">An anchor</a>
-</div>
-
+<div id="myForm"></div>
 </body>
+<script>
+    $(function () {
+        $('#myForm').w2form({
+            name: 'myForm',
+            fields: [
+                {name: 'Text', type: 'text', required: true},
+                {name: 'Publication Date', type: 'date', required: true}
+            ],
+            actions: {
+                reset: function () {
+                    this.clear();
+                },
+                save: function () {
+                    $.ajax({
+                        type: 'POST',
+                        url: "/polls/create-question/create",
+                        headers: {"X-CSRFToken": getCookie('csrftoken')},
+                        data: JSON.stringify(this.record),
+                        contentType: "application/json",
+                        dataType: "json",
+                        success: function (resultData) {
+                            alert("Save Complete")
+                        }
+                    });
+                }
+            }
+        });
+    });
+</script>
 </html>
