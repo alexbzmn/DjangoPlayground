@@ -4,6 +4,8 @@ from django.utils import timezone
 
 import json
 
+from django.views.decorators.csrf import csrf_exempt
+
 from .models import Question, Choice
 
 
